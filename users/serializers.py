@@ -1,4 +1,6 @@
+import bleach
 from rest_framework import serializers
+from django.utils import timezone
 from .models import Profissional, Consulta
 
 class ProfissionalSerializer(serializers.ModelSerializer):
@@ -13,8 +15,18 @@ class ProfissionalSerializer(serializers.ModelSerializer):
             'telefone', 'cep', 'logradouro', 'cidade', 'estado'
         ]
 
+    def validate(self, data):
+        """
+        Sanitização global para campos de texto do Profissional.
+        """
+        for field, value in data.items():
+            if isinstance(value, str):
+                # Remove tags HTML e limpa espaços extras
+                data[field] = bleach.clean(value, tags=[], strip=True).strip()
+        return data
+
 class ConsultaSerializer(serializers.ModelSerializer):
-    # Mostra os detalhes do profissional dentro da consulta (opcional)
+    # Detalhes ricos do profissional para o GET, mantendo a FK para o POST
     profissional_detalhes = ProfissionalSerializer(source='profissional', read_only=True)
 
     class Meta:
@@ -26,9 +38,17 @@ class ConsultaSerializer(serializers.ModelSerializer):
         
     def validate_data_hora(self, value):
         """
-        Exemplo de validação: Impede agendamentos no passado.
+        Impede agendamentos no passado.
         """
-        from django.utils import timezone
         if value < timezone.now():
             raise serializers.ValidationError("A data da consulta não pode ser no passado.")
         return value
+
+    def validate(self, data):
+        """
+        Sanitização global para campos de texto da Consulta (Paciente e Observações).
+        """
+        for field, value in data.items():
+            if isinstance(value, str):
+                data[field] = bleach.clean(value, tags=[], strip=True).strip()
+        return data
