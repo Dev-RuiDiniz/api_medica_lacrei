@@ -22,7 +22,7 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY pyproject.toml poetry.lock* /app/
 
 # Configurar Poetry para não criar venv dentro do container (usar o global do container)
-RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
 # Copiar o restante do código
 COPY . /app/
