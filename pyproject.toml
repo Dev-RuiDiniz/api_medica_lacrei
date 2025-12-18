@@ -6,9 +6,9 @@ authors = [
     {name = "Rui Diniz"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
-    "django (>=6.0,<7.0)",
+    "django (>=5.0,<7.0)",
     "djangorestframework (>=3.16.1,<4.0.0)",
     "psycopg2-binary (>=2.9.11,<3.0.0)"
 ]
