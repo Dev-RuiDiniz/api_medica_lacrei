@@ -34,3 +34,35 @@ class Profissional(models.Model):
 
     def __str__(self):
         return f"{self.nome_social} ({self.get_profissao_display()})"
+    
+class Consulta(models.Model):
+    STATUS_CHOICES = [
+        ('AGENDADO', 'Agendado'),
+        ('REALIZADO', 'Realizado'),
+        ('CANCELADO', 'Cancelado'),
+    ]
+
+    # Relacionamento: Se o profissional for deletado, as consultas dele também serão (CASCADE)
+    profissional = models.ForeignKey(
+        Profissional, 
+        on_delete=models.CASCADE, 
+        related_name='consultas',
+        verbose_name="Profissional"
+    )
+    
+    # Dados da Consulta
+    data_hora = models.DateTimeField("Data e Hora da Consulta")
+    paciente_nome = models.CharField("Nome do Paciente", max_length=150)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='AGENDADO')
+    observacoes = models.TextField("Observações Clínicas", blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Consulta"
+        verbose_name_plural = "Consultas"
+        ordering = ['-data_hora']
+
+    def __str__(self):
+        return f"{self.paciente_nome} com {self.profissional.nome_social} em {self.data_hora.strftime('%d/%m/%Y %H:%M')}"
