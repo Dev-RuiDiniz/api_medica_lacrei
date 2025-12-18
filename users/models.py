@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 class Profissional(models.Model):
     PROFISSÕES_CHOICES = [
@@ -66,3 +68,31 @@ class Consulta(models.Model):
 
     def __str__(self):
         return f"{self.paciente_nome} com {self.profissional.nome_social} em {self.data_hora.strftime('%d/%m/%Y %H:%M')}"
+    
+    def clean(self):
+        """
+        Validações de regra de negócio antes de salvar.
+        """
+        # 1. Impedir datas no passado
+        if self.data_hora < timezone.now():
+            raise ValidationError("Não é possível agendar uma consulta para uma data passada.")
+
+        # 2. Impedir horários conflitantes para o mesmo profissional
+        # Verifica se já existe uma consulta para o mesmo profissional no mesmo horário
+        conflito = Consulta.objects.filter(
+            profissional=self.profissional,
+            data_hora=self.data_hora
+        ).exclude(id=self.id) # Exclui a própria consulta em caso de edição
+
+        if conflito.exists():
+            raise ValidationError(
+                f"O profissional {self.profissional.nome_social} já possui uma consulta agendada para este horário."
+            )
+
+    def save(self, *args, **kwargs):
+        """
+        Sobrescreve o save para garantir que o clean() seja chamado, 
+        pois o Django não chama clean() automaticamente no save().
+        """
+        self.full_clean()
+        super().save(*args, **kwargs)

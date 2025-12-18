@@ -46,9 +46,33 @@ class ConsultaSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Sanitização global para campos de texto da Consulta (Paciente e Observações).
+        Validação de nível de objeto para capturar conflitos antes do save.
         """
+        # Acesso aos dados enviados
+        profissional = data.get('profissional')
+        data_hora = data.get('data_hora')
+        
+        # O ID é necessário para excluir a própria consulta em updates
+        instance_id = self.instance.id if self.instance else None
+
+        # Reutilizamos a lógica de conflito
+        if data_hora < timezone.now():
+            raise serializers.ValidationError({"data_hora": "A data da consulta não pode ser no passado."})
+
+        conflito = Consulta.objects.filter(
+            profissional=profissional,
+            data_hora=data_hora
+        ).exclude(id=instance_id)
+
+        if conflito.exists():
+            raise serializers.ValidationError(
+                {"detail": "Este profissional já possui um agendamento neste horário."}
+            )
+        
+        # Chama a sanitização que fizemos na tarefa anterior
         for field, value in data.items():
             if isinstance(value, str):
+                import bleach
                 data[field] = bleach.clean(value, tags=[], strip=True).strip()
+                
         return data
