@@ -22,13 +22,8 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - DEBUG=1
-      - DB_NAME=lacre_db
-      - DB_USER=lacre_user
-      - DB_PASS=lacre_pass
-      - DB_HOST=db
-      - DB_PORT=5432
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
