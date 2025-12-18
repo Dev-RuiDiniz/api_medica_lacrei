@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'corsheaders',
     
     'users',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -92,3 +93,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
