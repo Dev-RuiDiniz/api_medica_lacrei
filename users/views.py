@@ -61,7 +61,7 @@ class ConsultaViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # 1. Salva a consulta no banco de dados local
         consulta = serializer.save()
-        
+
         # 🚀 TAREFA 9: Integração com Asaas (Bônus)
         try:
             asaas = AsaasService()
@@ -70,7 +70,9 @@ class ConsultaViewSet(viewsets.ModelViewSet):
                 f"[ASAAS] Cobrança {cobranca['id']} gerada para Consulta {consulta.id}. Link: {cobranca['invoiceUrl']}"
             )
         except Exception as e:
-            logger.error(f"[ASAAS] Erro ao integrar pagamento para Consulta {consulta.id}: {str(e)}")
+            logger.error(
+                f'[ASAAS] Erro ao integrar pagamento para Consulta {consulta.id}: {str(e)}'
+            )
 
         logger.info(
             f"[SCHEDULE] Nova consulta ID {consulta.id} agendada para o paciente '{consulta.paciente_nome}' por usuário ID: {self.request.user.id}"
@@ -86,7 +88,7 @@ class ConsultaViewSet(viewsets.ModelViewSet):
         Rota customizada protegida para buscar consultas de um profissional específico.
         """
         consultas = self.queryset.filter(profissional_id=prof_id)
-        
+
         # Aplica paginação caso esteja configurada globalmente
         page = self.paginate_queryset(consultas)
         if page is not None:
