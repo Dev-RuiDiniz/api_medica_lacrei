@@ -58,6 +58,7 @@ API robusta para gestão de profissionais de saúde e agendamento de consultas, 
     ```
 
 ## 📦 Gestão de Dependências (Local)
+
 Caso queira rodar comandos do Poetry localmente:
 
     ```bash
