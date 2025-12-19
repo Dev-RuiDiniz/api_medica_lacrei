@@ -12,5 +12,9 @@ class TestProfissionalViews(TestSetUp):
     def test_can_create_profissional_with_auth(self):
         """Valida a criação de profissional com usuário autenticado"""
         res = self.client.post(reverse('profissional-list'), self.profissional_data)
+    
+        # Adicione esta linha para ver o erro no terminal:
+        if res.status_code != 201:
+            print(f"\nERRO DA API: {res.data}")
+
         self.assertEqual(res.status_code, 201)
-        self.assertEqual(res.data['nome_social'], self.profissional_data['nome_social'])

@@ -27,18 +27,17 @@ class TestSetUp(APITestCase):
         
         # Dados de exemplo para uso nos testes
         self.profissional_data = {
-            "nome_social": "Dr. Teste Sanitizado",
-            "nome_registro": "Teste Registro",
-            "profissao": "M",
-            "registro_profissional": "123456",
-            "email": "teste@lacrei.com",
-            "telefone": "11999999999",
+            "nome_social": "Dr. Rui Teste",
+            "nome_registro": "Rui Francisco", # Se for o nome civil
+            "profissao": "MED", # 'M' para Médico
+            "registro_profissional": "CRM-SP 123456",
+            "email": "dr_rui_teste@exemplo.com",
+            "telefone": "11988887777",
             "cep": "01234567",
-            "logradouro": "Rua Teste",
+            "logradouro": "Avenida Paulista",
             "cidade": "São Paulo",
             "estado": "SP"
         }
-
         return super().setUp()
 
     def tearDown(self):
