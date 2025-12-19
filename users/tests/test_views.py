@@ -6,18 +6,16 @@ class TestProfissionalViews(TestSetUp):
     
     def test_can_create_profissional_with_auth(self):
         """Sucesso: Criação de profissional"""
-        res = self.client.post(reverse('profissional-list'), self.profissional_data)
+        res = self.client.post(reverse('profissional-list'), self.profissional_data, format='json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.data['nome_social'], self.profissional_data['nome_social'])
 
     def test_can_list_profissionais(self):
         """Sucesso: Listagem de profissionais"""
-        # Primeiro, garantimos que existe um profissional no banco
         Profissional.objects.create(**self.profissional_data)
         
         res = self.client.get(reverse('profissional-list'))
         self.assertEqual(res.status_code, 200)
-        # Verifica se o retorno é uma lista e se tem pelo menos 1 item
         self.assertIsInstance(res.data['results'], list)
         self.assertGreaterEqual(len(res.data['results']), 1)
 
@@ -36,7 +34,7 @@ class TestProfissionalViews(TestSetUp):
         url = reverse('profissional-detail', kwargs={'pk': prof.id})
         
         novo_nome = "Dr. Rui Francisco Editado"
-        res = self.client.patch(url, {'nome_social': novo_nome})
+        res = self.client.patch(url, {'nome_social': novo_nome}, format='json')
         
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['nome_social'], novo_nome)
@@ -44,5 +42,18 @@ class TestProfissionalViews(TestSetUp):
     def test_cannot_create_profissional_without_auth(self):
         """Segurança: Bloqueio de acesso anônimo"""
         self.client.credentials() 
-        res = self.client.post(reverse('profissional-list'), self.profissional_data)
+        res = self.client.post(reverse('profissional-list'), self.profissional_data, format='json')
         self.assertEqual(res.status_code, 401)
+        
+    def test_profissional_name_sanitization(self):
+        """Segurança: Garante que o nome_social é sanitizado contra XSS"""
+        dirty_data = self.profissional_data.copy()
+        # O Bleach remove as tags <script></script>, mas mantém o texto interno.
+        dirty_data['nome_social'] = "<script>alert('xss')</script>Dr. Rui"
+        
+        res = self.client.post(reverse('profissional-list'), dirty_data, format='json')
+        
+        self.assertEqual(res.status_code, 201)
+        
+        # Correção da assertiva: o texto do alerta permanece, apenas as tags somem.
+        self.assertEqual(res.data['nome_social'], "alert('xss')Dr. Rui")
