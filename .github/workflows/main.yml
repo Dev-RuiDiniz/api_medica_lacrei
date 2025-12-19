@@ -37,9 +37,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # Instalando versões específicas que suportam Python 3.12
-          pip install "flake8>=7.0.0"
           pip install -r requirements.txt
           pip install pytest pytest-django pytest-cov blue bleach python-dotenv
+          pip install "flake8>=7.0.0" "importlib-metadata>=7.0.0"
 
       - name: Lint with Flake8
         run: |
