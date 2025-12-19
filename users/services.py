@@ -1,4 +1,5 @@
 from django.conf import settings
+import requests  # Certifique-se de que o import está aqui se for usar
 
 
 class AsaasService:
@@ -12,25 +13,25 @@ class AsaasService:
         self.headers = {'access_token': self.api_key}
 
     def criar_cliente(self, paciente_nome):
-        # No cenário real, buscaríamos o email/CPF do paciente
-        payload = {'name': paciente_nome}
-        # return requests.post(f"{self.url}/customers", json=payload, headers=self.headers)
-        return {'id': 'cus_000001'}   # Mock para o desafio
+        """
+        Simula a criação de um cliente no Asaas.
+        """
+        # No cenário real: payload = {'name': paciente_nome}
+        # requests.post(f"{self.url}/customers", json=payload, headers=self.headers)
+        return {'id': 'cus_000001'}  # Mock para o desafio
 
     def gerar_cobranca(self, consulta):
+        """
+        Simula a geração de uma cobrança PIX.
+        """
         cliente_id = self.criar_cliente(consulta.paciente_nome)['id']
 
-        payload = {
-            'customer': cliente_id,
-            'billingType': 'PIX',
-            'value': 150.00,  # Valor fixo sugerido para o MVP
-            'dueDate': consulta.data_hora.date().isoformat(),
-            'description': f'Consulta com {consulta.profissional.nome_social}',
-            'externalReference': str(consulta.id),
-        }
-        # return requests.post(f"{self.url}/payments", json=payload, headers=self.headers)
+        # Para evitar o erro F841 (variável não usada), 
+        # passamos os dados diretamente no retorno do Mock
         return {
-            'id': 'pay_999888777',
-            'invoiceUrl': 'https://sandbox.asaas.com/i/999888777',
+            'id': f'pay_{consulta.id}',
             'status': 'PENDING',
+            'invoiceUrl': 'https://asaas.com/i/mock_pix',
+            'value': 150.00,
+            'customer': cliente_id
         }
