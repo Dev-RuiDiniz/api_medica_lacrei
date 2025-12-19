@@ -61,4 +61,4 @@ jobs:
           SECRET_KEY: test_secret_key
           DEBUG: "True"
         run: |
-          pytest --cov=users --cov-report=xml
+          pytest --cov=users --cov-report=xml --cov-report=term
