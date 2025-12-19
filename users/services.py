@@ -1,5 +1,4 @@
 from django.conf import settings
-import requests  # Certifique-se de que o import está aqui se for usar
 
 
 class AsaasService:
@@ -26,8 +25,6 @@ class AsaasService:
         """
         cliente_id = self.criar_cliente(consulta.paciente_nome)['id']
 
-        # Para evitar o erro F841 (variável não usada), 
-        # passamos os dados diretamente no retorno do Mock
         return {
             'id': f'pay_{consulta.id}',
             'status': 'PENDING',
