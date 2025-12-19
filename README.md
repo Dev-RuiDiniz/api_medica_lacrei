@@ -70,5 +70,27 @@ Caso queira rodar comandos do Poetry localmente:
 
 O projeto segue os princípios Twelve-Factor App, garantindo que a configuração seja separada do código e que o ambiente de desenvolvimento seja idêntico ao de produção.
 
+## 🛡️ Decisões Técnicas e Segurança
+
+Nesta fase do projeto, implementamos camadas de segurança seguindo as melhores práticas da OWASP e do ecossistema Django.
+
+### 1. Autenticação via JWT (JSON Web Token)
+Optamos pelo padrão **JWT (SimpleJWT)** em vez da autenticação por sessão padrão do Django pelos seguintes motivos:
+- **Stateless**: O servidor não precisa armazenar sessões em memória, facilitando a escalabilidade em containers.
+- **Interoperabilidade**: Facilita a integração com aplicações Mobile e Frontends modernos (React/Vue/Mobile).
+- **Segurança**: Tokens possuem tempo de expiração curto (60 minutos) e necessidade de Refresh Token, minimizando danos em caso de vazamento.
+
+### 2. Sanitização de Dados (Prevenção contra XSS)
+Para garantir a integridade dos dados e proteger os usuários que visualizarão as informações (como nomes de profissionais e pacientes), implementamos a biblioteca **Bleach** nos serializers:
+- **Filtro Ativo**: Todos os campos de texto são limpos antes de chegarem ao banco de dados PostgreSQL.
+- **Remoção de Tags**: Scripts maliciosos como `<script>` ou tags HTML indesejadas são removidos automaticamente, prevenindo ataques de *Stored Cross-Site Scripting*.
+
+### 3. Regras de Negócio e Integridade
+As validações foram implementadas em duas camadas:
+- **Serializers**: Para fornecer respostas rápidas e amigáveis ao usuário via API.
+- **Models (clean/save)**: Como uma "última linha de defesa" para garantir que, mesmo via Django Admin ou Scripts, não existam consultas em datas passadas ou conflitos de horário para o mesmo profissional.
+
+### 4. Observabilidade (Logs)
+Configuramos um sistema de logging estruturado que diferencia logs de erro (salvos em arquivo) e logs de operação (auditoria de quem criou/editou registros), essencial para conformidade em sistemas de saúde.
 
 ## Desenvolvido por Rui Diniz - Dezembro 2025.
