@@ -39,6 +39,14 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-django pytest-cov flake8 blue bleach python-dotenv
 
+      - name: Lint with Flake8
+        run: |
+          # Para o build se houver erros de sintaxe Python ou símbolos indefinidos
+          # exit-zero trata os erros como avisos (nós queremos que ele PARE, então não usaremos)
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # O padrão da Lacrei: verifica erros de estilo (PEP8)
+          flake8 . --count --max-complexity=10 --max-line-length=150 --statistics
+
       - name: Run Tests and Coverage
         env:
           # Estas variáveis forçam o Django a ignorar arquivos locais durante o teste no GitHub
