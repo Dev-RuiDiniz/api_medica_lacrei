@@ -11,7 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 🛡️ Segurança
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-mudar-em-producao')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0').split(',')
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0'
+).split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -21,13 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     # Apps de terceiros
     'rest_framework',
-    'rest_framework_simplejwt', # Adicionado para JWT
+    'rest_framework_simplejwt',  # Adicionado para JWT
     'corsheaders',
     'django_filters',
-    
     # Seus Apps
     'users',
 ]
@@ -85,14 +85,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated', # Acesso apenas com Token
+        'rest_framework.permissions.IsAuthenticated',  # Acesso apenas com Token
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
 }
 
 # 🔑 Simple JWT Config
@@ -107,7 +107,7 @@ SIMPLE_JWT = {
 }
 
 # 🔓 CORS Config
-CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_ALL_ORIGINS = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

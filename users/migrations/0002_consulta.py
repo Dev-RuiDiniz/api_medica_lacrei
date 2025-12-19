@@ -14,14 +14,58 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Consulta',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data_hora', models.DateTimeField(verbose_name='Data e Hora da Consulta')),
-                ('paciente_nome', models.CharField(max_length=150, verbose_name='Nome do Paciente')),
-                ('status', models.CharField(choices=[('AGENDADO', 'Agendado'), ('REALIZADO', 'Realizado'), ('CANCELADO', 'Cancelado')], default='AGENDADO', max_length=10)),
-                ('observacoes', models.TextField(blank=True, null=True, verbose_name='Observações Clínicas')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'data_hora',
+                    models.DateTimeField(
+                        verbose_name='Data e Hora da Consulta'
+                    ),
+                ),
+                (
+                    'paciente_nome',
+                    models.CharField(
+                        max_length=150, verbose_name='Nome do Paciente'
+                    ),
+                ),
+                (
+                    'status',
+                    models.CharField(
+                        choices=[
+                            ('AGENDADO', 'Agendado'),
+                            ('REALIZADO', 'Realizado'),
+                            ('CANCELADO', 'Cancelado'),
+                        ],
+                        default='AGENDADO',
+                        max_length=10,
+                    ),
+                ),
+                (
+                    'observacoes',
+                    models.TextField(
+                        blank=True,
+                        null=True,
+                        verbose_name='Observações Clínicas',
+                    ),
+                ),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('profissional', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consultas', to='users.profissional', verbose_name='Profissional')),
+                (
+                    'profissional',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='consultas',
+                        to='users.profissional',
+                        verbose_name='Profissional',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Consulta',

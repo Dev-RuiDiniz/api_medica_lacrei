@@ -2,18 +2,22 @@ from django.urls import reverse
 from .test_setup import TestSetUp
 from users.models import Profissional
 
+
 class TestProfissionalViews(TestSetUp):
-    
     def test_can_create_profissional_with_auth(self):
         """Sucesso: Criação de profissional"""
-        res = self.client.post(reverse('profissional-list'), self.profissional_data, format='json')
+        res = self.client.post(
+            reverse('profissional-list'), self.profissional_data, format='json'
+        )
         self.assertEqual(res.status_code, 201)
-        self.assertEqual(res.data['nome_social'], self.profissional_data['nome_social'])
+        self.assertEqual(
+            res.data['nome_social'], self.profissional_data['nome_social']
+        )
 
     def test_can_list_profissionais(self):
         """Sucesso: Listagem de profissionais"""
         Profissional.objects.create(**self.profissional_data)
-        
+
         res = self.client.get(reverse('profissional-list'))
         self.assertEqual(res.status_code, 200)
         self.assertIsInstance(res.data['results'], list)
@@ -23,7 +27,7 @@ class TestProfissionalViews(TestSetUp):
         """Sucesso: Detalhe de um profissional específico"""
         prof = Profissional.objects.create(**self.profissional_data)
         url = reverse('profissional-detail', kwargs={'pk': prof.id})
-        
+
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['nome_social'], prof.nome_social)
@@ -32,28 +36,32 @@ class TestProfissionalViews(TestSetUp):
         """Sucesso: Edição (PATCH) de um profissional"""
         prof = Profissional.objects.create(**self.profissional_data)
         url = reverse('profissional-detail', kwargs={'pk': prof.id})
-        
-        novo_nome = "Dr. Rui Francisco Editado"
+
+        novo_nome = 'Dr. Rui Francisco Editado'
         res = self.client.patch(url, {'nome_social': novo_nome}, format='json')
-        
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['nome_social'], novo_nome)
 
     def test_cannot_create_profissional_without_auth(self):
         """Segurança: Bloqueio de acesso anônimo"""
-        self.client.credentials() 
-        res = self.client.post(reverse('profissional-list'), self.profissional_data, format='json')
+        self.client.credentials()
+        res = self.client.post(
+            reverse('profissional-list'), self.profissional_data, format='json'
+        )
         self.assertEqual(res.status_code, 401)
-        
+
     def test_profissional_name_sanitization(self):
         """Segurança: Garante que o nome_social é sanitizado contra XSS"""
         dirty_data = self.profissional_data.copy()
         # O Bleach remove as tags <script></script>, mas mantém o texto interno.
         dirty_data['nome_social'] = "<script>alert('xss')</script>Dr. Rui"
-        
-        res = self.client.post(reverse('profissional-list'), dirty_data, format='json')
-        
+
+        res = self.client.post(
+            reverse('profissional-list'), dirty_data, format='json'
+        )
+
         self.assertEqual(res.status_code, 201)
-        
+
         # Correção da assertiva: o texto do alerta permanece, apenas as tags somem.
         self.assertEqual(res.data['nome_social'], "alert('xss')Dr. Rui")
