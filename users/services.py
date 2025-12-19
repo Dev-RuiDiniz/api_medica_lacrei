@@ -32,4 +32,3 @@ class AsaasService:
             'value': 150.00,
             'customer': cliente_id
         }
-        
