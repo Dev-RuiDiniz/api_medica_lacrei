@@ -93,4 +93,15 @@ As validações foram implementadas em duas camadas:
 ### 4. Observabilidade (Logs)
 Configuramos um sistema de logging estruturado que diferencia logs de erro (salvos em arquivo) e logs de operação (auditoria de quem criou/editou registros), essencial para conformidade em sistemas de saúde.
 
+## 💰 Integração com Gateway de Pagamento (Bônus)
+
+Implementamos uma arquitetura de serviços para integração com o **Asaas**, permitindo a cobrança automática via PIX no momento do agendamento.
+
+### Fluxo de Pagamento:
+1. **Trigger**: Ao salvar uma nova `Consulta`, o `AsaasService` é invocado.
+2. **Customer Creation**: O sistema verifica/cria o cliente no gateway.
+3. **Payment Generation**: É gerada uma cobrança com `externalReference` vinculado ao ID da consulta para conciliação bancária via Webhook.
+
+*Nota: Atualmente operando em modo Mock para preservação de credenciais de Sandbox.*
+
 ## Desenvolvido por Rui Diniz - Dezembro 2025.
