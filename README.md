@@ -37,21 +37,21 @@ API robusta para gestão de profissionais de saúde e agendamento de consultas, 
 
 3. Subir os containers:
 
-    ```Bash
+    ```bash
 
     docker-compose up -d --build
     ```
 
 4. Executar migrações iniciais:
 
-    ```Bash
+    ```bash
 
     docker-compose exec web python manage.py migrate
     ```
 
 5. Criar usuário administrador:
 
-    ```Bash
+    ```bash
 
     docker-compose exec web python manage.py createsuperuser
     Acesse o painel administrativo em: http://localhost:8000/admin
@@ -60,7 +60,7 @@ API robusta para gestão de profissionais de saúde e agendamento de consultas, 
 ## 📦 Gestão de Dependências (Local)
 Caso queira rodar comandos do Poetry localmente:
 
-    ```Bash
+    ```bash
 
     poetry install
     poetry shell
@@ -103,5 +103,59 @@ Implementamos uma arquitetura de serviços para integração com o **Asaas**, pe
 3. **Payment Generation**: É gerada uma cobrança com `externalReference` vinculado ao ID da consulta para conciliação bancária via Webhook.
 
 *Nota: Atualmente operando em modo Mock para preservação de credenciais de Sandbox.*
+
+## 🧪 Testes e Qualidade de Código
+
+Esta API foi desenvolvida seguindo rigorosos padrões de qualidade, com foco em segurança, integridade de dados e cobertura de testes.
+
+### 📊 Métricas de Cobertura
+Atualmente, o projeto conta com **93% de cobertura de código**, garantindo que as principais regras de negócio e fluxos de segurança estejam protegidos contra regressões.
+
+### 🛠️ Como rodar a suíte de testes
+
+Certifique-se de que os containers do Docker estejam rodando (`docker-compose up -d`).
+
+1. Executar todos os testes (Pytest)
+
+Para rodar os 24 testes unitários e de integração:
+
+```bash
+
+docker-compose exec web pytest
+```
+
+2. Gerar Relatório de Cobertura (Coverage)
+
+Para visualizar a cobertura de testes no terminal:
+
+```bash
+
+docker-compose exec web pytest --cov=users
+```
+
+Para gerar o relatório detalhado em HTML (abrir a pasta htmlcov/index.html após o comando):
+
+```bash
+
+docker-compose exec web pytest --cov=users --cov-report=html
+```
+
+3. Verificação de Estilo e Lint (PEP8)
+Garantimos que o código segue as normas da PEP8 utilizando o flake8:
+
+```bash
+
+docker-compose exec web flake8 .
+```
+
+### 🔍 O que está sendo testado?
+
+- Autenticação: Bloqueio de acesso a usuários sem Token JWT ou com tokens inválidos.
+- Segurança (XSS): Validação da limpeza de campos de texto (sanitização) contra injeção de scripts.
+- Regras de Negócio:
+- Impedimento de agendamentos em datas retroativas.
+- Bloqueio de conflitos de horário (um profissional não pode ter duas consultas no mesmo horário).
+- CRUD Completo: Validação de criação, leitura, edição parcial (PATCH) e deleção de Profissionais e Consultas.
+- Integração Bônus: Simulação do fluxo de pagamento via API do Asaas.
 
 ## Desenvolvido por Rui Diniz - Dezembro 2025.
