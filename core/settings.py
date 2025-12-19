@@ -25,9 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Apps de terceiros
     'rest_framework',
-    'rest_framework_simplejwt',  # Adicionado para JWT
+    'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'drf_spectacular',  # Gerador de documentação
     # Seus Apps
     'users',
 ]
@@ -79,13 +80,13 @@ TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
-# ⚡ Django Rest Framework Config (UNIFICADO)
+# ⚡ Django Rest Framework Config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Acesso apenas com Token
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -93,6 +94,18 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    # 📝 Adicionado para o Spectacular gerar o esquema OpenAPI
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# 📝 Spectacular Settings (Swagger UI)
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Médica Lacrei',
+    'DESCRIPTION': 'Documentação oficial da API de gerenciamento de consultas médicas.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_PATCH': True,
+    'COMPONENT_SPLIT_COMMAND': True,
 }
 
 # 🔑 Simple JWT Config
@@ -145,7 +158,7 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        'users': {  # Logger específico para o seu app
+        'users': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,

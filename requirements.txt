@@ -1,4 +1,5 @@
 asgiref==3.11.0
+attrs==25.4.0
 black==22.1.0
 bleach==6.3.0
 blue==0.9.1
@@ -10,8 +11,12 @@ django-cors-headers==4.9.0
 django-filter==25.2
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
+drf-spectacular==0.29.0
 flake8==4.0.1
+inflection==0.5.1
 iniconfig==2.3.0
+jsonschema==4.25.1
+jsonschema-specifications==2025.9.1
 mccabe==0.6.1
 mypy_extensions==1.1.0
 packaging==25.0
@@ -27,8 +32,12 @@ pytest==9.0.2
 pytest-cov==7.0.0
 pytest-django==4.11.1
 python-dotenv==1.2.1
+PyYAML==6.0.3
+referencing==0.37.0
 rest-framework-simplejwt==0.0.2
+rpds-py==0.30.0
 sqlparse==0.5.4
 tomli==2.3.0
 tzdata==2025.3
+uritemplate==4.2.0
 webencodings==0.5.1
