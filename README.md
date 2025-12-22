@@ -9,6 +9,47 @@ API robusta para gestão de profissionais de saúde e agendamento de consultas, 
 * **Poetry** (Gestão de dependências)
 * **Docker & Docker Compose** (Containerização)
 
+---
+
+## 🗂️ Estrutura do Projeto e Arquivos Importantes
+
+```
+api_medica_lacrei/
+│
+├── core/               # Configurações globais Django (settings, urls, wsgi etc)
+├── users/              # App principal: modelos, views, serializers, regras e testes
+│   ├── migrations/     # Migrações do banco
+│   └── tests/          # Testes unitários e integrados
+│
+├── Dockerfile          # Para build do container web Python/Django
+├── docker-compose.yml  # Orquestração dos serviços web/db
+├── pyproject.toml      # Dependências (Poetry)
+├── requirements.txt    # Dependências (pip freeze)
+├── main.tf             # Configuração Infraestrutura (Terraform - deploy AWS)
+├── README.md           # Documentação principal
+├── manage.py           # CLI Django
+└── ...
+```
+
+### Principais Funcionalidades e Arquivos:
+- **App `users`**: Gestão de profissionais, consultas, regras de negócio e serviços externos (pagamento).
+- **Camada de testes completa**: `users/tests/` cobre autenticação, segurança, business rules, views e integração.
+- **Bleach**: Sanitização de texto nos serializers (prevenção XSS).
+- **Integração com gateway Asaas**: Cobranças automáticas mockadas em testes.
+- **Infraestrutura pronta para produção**: Docker (web/db), variáveis de ambiente, scripts migration/admin e deploy cloud (`main.tf`).
+
+### Dependências Principais
+- Django, DRF, djangorestframework-simplejwt (JWT)
+- PostgreSQL, psycopg2-binary
+- bleach, django-cors-headers, django-filter
+- Pytest, coverage, flake8 (qualidade)
+
+### Observações
+- O deploy cloud utiliza `main.tf` com AWS AppRunner; ambiente dockerizado ready-to-go.
+- Os dados sensíveis (senhas, keys) ficam no `.env`, não versionado.
+
+---
+
 ## 🛠️ Configuração e Instalação (Docker)
 
 ### Pré-requisitos
